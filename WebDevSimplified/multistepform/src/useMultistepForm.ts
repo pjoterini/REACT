@@ -25,10 +25,7 @@ export function useMultistepForm(steps: ReactElement[]) {
         setCurrentStepIndex(index)
     }
 
-    function onSubmit(e: FormEvent) {
-        e.preventDefault()
-        next()
-    }
+
 
     return {
         currentStepIndex,
@@ -39,6 +36,5 @@ export function useMultistepForm(steps: ReactElement[]) {
         steps,
         isFirstStep: currentStepIndex === 0,
         isLastStep: currentStepIndex === steps.length - 1,
-        onSubmit
     }
 }

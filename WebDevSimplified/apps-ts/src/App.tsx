@@ -5,21 +5,11 @@ import './App.css';
 import PhotoEditor from './apps/photoEditor/PhotoEditor';
 import PropTypes from './apps/propTypes/PropTypes';
 import ReactPortal from './apps/reactPortal/ReactPortal';
-import Select from './apps/select/Select';
-
-const options = [
-  {label: 'first', value: 1},
-  {label: 'second', value: 2},
-  {label: 'third', value: 3},
-  {label: 'fourh', value: 4},
-  {label: 'fifth', value: 5},
-]
 
 function App() {
   return (
-    <>
+      <>
       <div className='main'>
-        <Select value={options} onChange={() => console.log('sup')} options={}/>
         <PropTypes />
         <PhotoEditor />
         <ReactPortal />
