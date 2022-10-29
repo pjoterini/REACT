@@ -6,23 +6,22 @@
   "scripts": {
     "watch": "tsc -w",
     "dev": "nodemon dist/index.js",
-    "start": "node dist/index.js",
-    "start2": "ts-node src/index.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "ts-node src/index.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "@types/node": "^18.11.0",
-    "typescript": "^4.8.4"
-  },
   "dependencies": {
-    "@mikro-orm/cli": "^5.4.2",
-    "@mikro-orm/core": "^5.4.2",
-    "@mikro-orm/migrations": "^5.4.2",
-    "@mikro-orm/postgresql": "^5.4.2",
+    "@mikro-orm/cli": "^5.5.0",
+    "@mikro-orm/core": "^5.5.0",
+    "@mikro-orm/migrations": "^5.5.0",
+    "@mikro-orm/postgresql": "^5.5.0",
+    "dotenv": "^16.0.3",
+    "nodemon": "^2.0.20",
     "pg": "^8.8.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.11.7"
   },
   "mikro-orm": {
     "useTsNode": true,
