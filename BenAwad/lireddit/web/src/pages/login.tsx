@@ -9,7 +9,7 @@ import { useRouter } from "next/router";
 
 interface loginProps {}
 
-export const Login: React.FC<{}> = ({}) => {
+export const Login: React.FC<loginProps> = ({}) => {
   const router = useRouter();
   const [, login] = useLoginMutation();
 
@@ -29,7 +29,7 @@ export const Login: React.FC<{}> = ({}) => {
           }
         }}
       >
-        {({ values, handleChange, isSubmitting }) => (
+        {({ isSubmitting }) => (
           <Form>
             <InputField
               name="username"

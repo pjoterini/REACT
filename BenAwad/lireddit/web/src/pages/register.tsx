@@ -1,13 +1,6 @@
 import React from "react";
 import { Formik, Form } from "formik";
-import {
-  FormControl,
-  FormLabel,
-  Input,
-  FormErrorMessage,
-  Box,
-  Button,
-} from "@chakra-ui/react";
+import { Box, Button } from "@chakra-ui/react";
 import { Wrapper } from "../components/Wrapper";
 import { InputField } from "../components/InputField";
 import { useRegisterMutation } from "../generated/graphql";
@@ -30,13 +23,12 @@ export const Register: React.FC<registerProps> = ({}) => {
           if (response.data?.register?.errors) {
             setErrors(toErrorMap(response.data.register.errors));
           } else if (response.data?.register?.user) {
-            // worked
             console.log("worked");
             router.push("/");
           }
         }}
       >
-        {({ values, handleChange, isSubmitting }) => (
+        {({ isSubmitting }) => (
           <Form>
             <InputField
               name="username"
