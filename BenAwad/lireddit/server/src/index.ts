@@ -1,5 +1,5 @@
 import { MikroORM } from "@mikro-orm/core";
-import { __prod__ } from "./constants";
+import { COOKIE_NAME, __prod__ } from "./constants";
 import microConfig from "./mikro-orm.config";
 import express from "express";
 import { buildSchema } from "type-graphql";
@@ -7,7 +7,8 @@ import { ApolloServer } from "apollo-server-express";
 import { HelloResolver } from "./resolvers/hello";
 import { PostResolver } from "./resolvers/post";
 import { UserResolver } from "./resolvers/user";
-import * as redis from "redis";
+import Redis from "ioredis";
+// import * as redis from "redis";
 import session from "express-session";
 import connectRedis from "connect-redis";
 import cors from "cors";
@@ -21,25 +22,28 @@ const main = async () => {
   app.set("trust proxy", 1);
 
   const RedisStore = connectRedis(session);
-  const redisClient = redis.createClient({ legacyMode: true });
-  await redisClient.connect();
+  const redisClient = new Redis();
+  // const redisClient = redis.createClient({ legacyMode: true });
+  if (!redisClient.status) {
+    await redisClient.connect();
+  }
 
   app.use(
     cors({
-      origin: "http://localhost:3000",
+      origin: ["http://localhost:3000"],
       credentials: true,
     })
   );
 
   app.use(
     session({
-      name: "qid",
+      name: COOKIE_NAME,
       store: new RedisStore({ client: redisClient, disableTouch: true }),
       cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 365 * 10,
-        httpOnly: false,
+        httpOnly: true,
         sameSite: "lax",
-        secure: false,
+        secure: __prod__,
       },
       saveUninitialized: false,
       secret: "dasdweqafsadf",
