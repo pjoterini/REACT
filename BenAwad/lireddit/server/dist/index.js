@@ -36,7 +36,11 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         yield redisClient.connect();
     }
     app.use((0, cors_1.default)({
-        origin: ["http://localhost:3000"],
+        origin: [
+            "http://localhost:3000",
+            "http://localhost:4000/graphql",
+            "http://localhost:4000",
+        ],
         credentials: true,
     }));
     app.use((0, express_session_1.default)({
