@@ -30,7 +30,9 @@ const type_graphql_1 = require("type-graphql");
 const argon2_1 = __importDefault(require("argon2"));
 const constants_1 = require("../constants");
 const UsernamePasswordInput_1 = require("./UsernamePasswordInput");
-const validateRegister_1 = require("src/utils/validateRegister");
+const validateRegister_1 = require("../utils/validateRegister");
+const sendEmail_1 = require("../utils/sendEmail");
+const uuid_1 = require("uuid");
 let FieldError = class FieldError {
 };
 __decorate([
@@ -58,9 +60,56 @@ UserResponse = __decorate([
     (0, type_graphql_1.ObjectType)()
 ], UserResponse);
 let UserResolver = class UserResolver {
-    forgotPassword(email, { em }) {
+    changePassword(token, newPassword, { em, redis, req }) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (newPassword.length <= 2) {
+                return {
+                    errors: [
+                        {
+                            field: "newPassword",
+                            message: "password lentgh must be greater than 2",
+                        },
+                    ],
+                };
+            }
+            const userId = yield redis.get(constants_1.FORGET_PASSWORD_PREFIX + token);
+            if (!userId) {
+                return {
+                    errors: [
+                        {
+                            field: "token",
+                            message: "token expired",
+                        },
+                    ],
+                };
+            }
+            const user = em.findOne(User_1.User, { id: parseInt(userId) });
+            if (!userId) {
+                return {
+                    errors: [
+                        {
+                            field: "token",
+                            message: "user no longer exists",
+                        },
+                    ],
+                };
+            }
+            user.password = yield argon2_1.default.hash(newPassword);
+            yield em.persistAndFlush(user);
+            req.session.userId = user.id;
+            return { user };
+        });
+    }
+    forgotPassword(email, { em, redis }) {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield em.findOne(User_1.User, { email });
+            if (!user) {
+                return true;
+            }
+            const token = (0, uuid_1.v4)();
+            yield redis.set(constants_1.FORGET_PASSWORD_PREFIX + token, user.id, "EX", 60 * 60 * 24 * 3);
+            yield (0, sendEmail_1.sendEmail)(email, `<a href="http://localhost:3000/change-password/${token}">reset password</a>`);
+            return true;
         });
     }
     me({ req, em }) {
@@ -99,7 +148,7 @@ let UserResolver = class UserResolver {
                     return {
                         errors: [
                             {
-                                field: "username",
+                                field: "usernameOrEmail",
                                 message: "username already taken",
                             },
                         ],
@@ -121,7 +170,7 @@ let UserResolver = class UserResolver {
                 return {
                     errors: [
                         {
-                            field: "username",
+                            field: "usernameOrEmail",
                             message: "that username doesn't exist",
                         },
                     ],
@@ -161,6 +210,15 @@ let UserResolver = class UserResolver {
         });
     }
 };
+__decorate([
+    (0, type_graphql_1.Mutation)(() => UserResponse),
+    __param(0, (0, type_graphql_1.Arg)("token")),
+    __param(1, (0, type_graphql_1.Arg)("newPassword")),
+    __param(2, (0, type_graphql_1.Ctx)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, Object]),
+    __metadata("design:returntype", Promise)
+], UserResolver.prototype, "changePassword", null);
 __decorate([
     (0, type_graphql_1.Mutation)(() => Boolean),
     __param(0, (0, type_graphql_1.Arg)("email")),

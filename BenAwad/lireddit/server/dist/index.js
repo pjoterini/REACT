@@ -31,9 +31,9 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
     const app = (0, express_1.default)();
     app.set("trust proxy", 1);
     const RedisStore = (0, connect_redis_1.default)(express_session_1.default);
-    const redisClient = new ioredis_1.default();
-    if (!redisClient.status) {
-        yield redisClient.connect();
+    const redis = new ioredis_1.default();
+    if (!redis.status) {
+        yield redis.connect();
     }
     app.use((0, cors_1.default)({
         origin: [
@@ -45,7 +45,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
     }));
     app.use((0, express_session_1.default)({
         name: constants_1.COOKIE_NAME,
-        store: new RedisStore({ client: redisClient, disableTouch: true }),
+        store: new RedisStore({ client: redis, disableTouch: true }),
         cookie: {
             maxAge: 1000 * 60 * 60 * 24 * 365 * 10,
             httpOnly: true,
@@ -61,7 +61,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
             resolvers: [hello_1.HelloResolver, post_1.PostResolver, user_1.UserResolver],
             validate: false,
         }),
-        context: ({ req, res }) => ({ em: orm.em, req, res }),
+        context: ({ req, res }) => ({ em: orm.em, req, res, redis }),
     });
     yield apolloServer.start();
     apolloServer.applyMiddleware({
