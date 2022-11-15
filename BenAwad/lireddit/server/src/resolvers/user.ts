@@ -40,20 +40,20 @@ export class UserResolver {
   async changePassword(
     @Arg("token") token: string,
     @Arg("newPassword") newPassword: string,
-    @Ctx() { em, redis, req }: MyContext
+    @Ctx() { redis, em, req }: MyContext
   ): Promise<UserResponse> {
     if (newPassword.length <= 2) {
       return {
         errors: [
           {
             field: "newPassword",
-            message: "password lentgh must be greater than 2",
+            message: "password length must be greater than 2",
           },
         ],
       };
     }
-
-    const userId = await redis.get(FORGET_PASSWORD_PREFIX + token);
+    const key = FORGET_PASSWORD_PREFIX + token;
+    const userId = await redis.get(key);
     if (!userId) {
       return {
         errors: [
@@ -65,8 +65,8 @@ export class UserResolver {
       };
     }
 
-    const user = em.findOne(User, { id: parseInt(userId) });
-    if (!userId) {
+    const user = await em.findOne(User, { id: parseInt(userId) });
+    if (!user) {
       return {
         errors: [
           {
@@ -79,6 +79,8 @@ export class UserResolver {
 
     user.password = await argon2.hash(newPassword);
     await em.persistAndFlush(user);
+
+    await redis.del(key);
 
     req.session.userId = user.id;
     return { user };

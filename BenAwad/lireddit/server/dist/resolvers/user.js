@@ -60,19 +60,20 @@ UserResponse = __decorate([
     (0, type_graphql_1.ObjectType)()
 ], UserResponse);
 let UserResolver = class UserResolver {
-    changePassword(token, newPassword, { em, redis, req }) {
+    changePassword(token, newPassword, { redis, em, req }) {
         return __awaiter(this, void 0, void 0, function* () {
             if (newPassword.length <= 2) {
                 return {
                     errors: [
                         {
                             field: "newPassword",
-                            message: "password lentgh must be greater than 2",
+                            message: "password length must be greater than 2",
                         },
                     ],
                 };
             }
-            const userId = yield redis.get(constants_1.FORGET_PASSWORD_PREFIX + token);
+            const key = constants_1.FORGET_PASSWORD_PREFIX + token;
+            const userId = yield redis.get(key);
             if (!userId) {
                 return {
                     errors: [
@@ -83,8 +84,8 @@ let UserResolver = class UserResolver {
                     ],
                 };
             }
-            const user = em.findOne(User_1.User, { id: parseInt(userId) });
-            if (!userId) {
+            const user = yield em.findOne(User_1.User, { id: parseInt(userId) });
+            if (!user) {
                 return {
                     errors: [
                         {
@@ -96,6 +97,7 @@ let UserResolver = class UserResolver {
             }
             user.password = yield argon2_1.default.hash(newPassword);
             yield em.persistAndFlush(user);
+            yield redis.del(key);
             req.session.userId = user.id;
             return { user };
         });

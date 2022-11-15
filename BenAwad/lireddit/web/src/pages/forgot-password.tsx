@@ -1,21 +1,15 @@
-import React from "react";
+import { Flex, Button } from "@chakra-ui/react";
 import { Formik, Form } from "formik";
-import { Box, Button, Flex, Link } from "@chakra-ui/react";
-import { Wrapper } from "../components/Wrapper";
-import { InputField } from "../components/InputField";
-import { useLoginMutation } from "../generated/graphql";
-import { toErrorMap } from "../utils/toErrorMap";
-import { useRouter } from "next/router";
 import { withUrqlClient } from "next-urql";
+import router from "next/router";
+import React from "react";
+import { InputField } from "../components/InputField";
+import { Wrapper } from "../components/Wrapper";
 import { createUrqlClient } from "../utils/createUrqlClient";
-import NextLink from "next/link";
+import { toErrorMap } from "../utils/toErrorMap";
+import login from "./login";
 
-interface loginProps {}
-
-export const Login: React.FC<loginProps> = ({}) => {
-  const router = useRouter();
-  const [, login] = useLoginMutation();
-
+const ForgotPassword: React.FC<{}> = ({}) => {
   return (
     <Wrapper variant="small">
       <Formik
@@ -32,17 +26,12 @@ export const Login: React.FC<loginProps> = ({}) => {
       >
         {({ isSubmitting }) => (
           <Form>
-            <InputField
-              name="usernameOrEmail"
-              placeholder="username or email"
-              label="Username or Email"
-            />
             <Box mt={4}>
               <InputField
-                name="password"
-                placeholder="password"
-                label="Password"
-                type="password"
+                name="Email"
+                placeholder="Email"
+                label="email"
+                type="email"
               />
             </Box>
             <Flex justify="space-between" align="center">
@@ -53,7 +42,7 @@ export const Login: React.FC<loginProps> = ({}) => {
                 bgColor="teal"
                 isLoading={isSubmitting}
               >
-                Login
+                Forgot password
               </Button>
 
               <NextLink href="/forgot-password">
@@ -67,4 +56,4 @@ export const Login: React.FC<loginProps> = ({}) => {
   );
 };
 
-export default withUrqlClient(createUrqlClient)(Login);
+export default withUrqlClient(createUrqlClient)(ForgotPassword);

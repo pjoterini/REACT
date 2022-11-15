@@ -34,7 +34,7 @@ export const Register: React.FC<registerProps> = ({}) => {
           <Form>
             <InputField
               name="username"
-              placeholder="username"
+              placeholder="Username"
               label="Username"
             />
             <Box mt={4}>
@@ -43,7 +43,7 @@ export const Register: React.FC<registerProps> = ({}) => {
             <Box mt={4}>
               <InputField
                 name="password"
-                placeholder="password"
+                placeholder="Password"
                 label="Password"
                 type="password"
               />
