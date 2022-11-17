@@ -1,6 +1,7 @@
-import { MikroORM } from "@mikro-orm/core";
+import dotenv from "dotenv";
+dotenv.config();
+import "reflect-metadata";
 import { COOKIE_NAME, __prod__ } from "./constants";
-import microConfig from "./mikro-orm.config";
 import express from "express";
 import { buildSchema } from "type-graphql";
 import { ApolloServer } from "apollo-server-express";
@@ -11,10 +12,28 @@ import Redis from "ioredis";
 import session from "express-session";
 import connectRedis from "connect-redis";
 import cors from "cors";
+import { DataSource } from "typeorm";
+import { User } from "./entities/User";
+import { Post } from "./entities/Post";
+
+export const AppDataSource = new DataSource({
+  type: "postgres",
+  host: "localhost",
+  port: 5432,
+  database: "lireddit2",
+  username: "postgres",
+  password: `${process.env.SQL_PASSWORD}`,
+  logging: true,
+  synchronize: true,
+  entities: [Post, User],
+});
 
 const main = async () => {
-  const orm = await MikroORM.init(microConfig);
-  await orm.getMigrator().up();
+  AppDataSource.initialize()
+    .then(() => {
+      console.log("typeorm works");
+    })
+    .catch((error) => console.log(error, "typeorm does not work"));
 
   const app = express();
 
@@ -58,7 +77,7 @@ const main = async () => {
       resolvers: [HelloResolver, PostResolver, UserResolver],
       validate: false,
     }),
-    context: ({ req, res }) => ({ em: orm.em, req, res, redis }),
+    context: ({ req, res }) => ({ req, res, redis }),
   });
 
   await apolloServer.start();

@@ -1,56 +1,55 @@
-import { Flex, Button } from "@chakra-ui/react";
-import { Formik, Form } from "formik";
+import React, { useState } from "react";
 import { withUrqlClient } from "next-urql";
-import router from "next/router";
-import React from "react";
-import { InputField } from "../components/InputField";
-import { Wrapper } from "../components/Wrapper";
 import { createUrqlClient } from "../utils/createUrqlClient";
-import { toErrorMap } from "../utils/toErrorMap";
-import login from "./login";
+import { Wrapper } from "../components/Wrapper";
+import { Formik, Form } from "formik";
+import { InputField } from "../components/InputField";
+import { Flex, Button, Box } from "@chakra-ui/react";
+import { useForgotPasswordMutation } from "../generated/graphql";
 
 const ForgotPassword: React.FC<{}> = ({}) => {
+  const [complete, setComplete] = useState(false);
+  const [, forgotPassword] = useForgotPasswordMutation();
   return (
     <Wrapper variant="small">
       <Formik
-        initialValues={{ usernameOrEmail: "", password: "" }}
-        onSubmit={async (values, { setErrors }) => {
-          const response = await login(values);
-
-          if (response.data?.login.errors) {
-            setErrors(toErrorMap(response.data.login.errors));
-          } else if (response.data?.login.user) {
-            router.push("/");
-          }
+        initialValues={{ email: "" }}
+        onSubmit={async (values) => {
+          await forgotPassword(values);
+          setComplete(true);
+          console.log(values);
         }}
       >
-        {({ isSubmitting }) => (
-          <Form>
-            <Box mt={4}>
-              <InputField
-                name="Email"
-                placeholder="Email"
-                label="email"
-                type="email"
-              />
+        {({ isSubmitting }) =>
+          complete ? (
+            <Box>
+              if an account with that email adress exists, we sent You email
+              there.
             </Box>
-            <Flex justify="space-between" align="center">
-              <Button
-                mt={4}
-                type="submit"
-                color="aqua"
-                bgColor="teal"
-                isLoading={isSubmitting}
-              >
-                Forgot password
-              </Button>
-
-              <NextLink href="/forgot-password">
-                <Box>Forgot password?</Box>
-              </NextLink>
-            </Flex>
-          </Form>
-        )}
+          ) : (
+            <Form>
+              <Box mt={4}>
+                <InputField
+                  name="email"
+                  placeholder="Email"
+                  label="Email"
+                  type="email"
+                />
+              </Box>
+              <Flex justify="space-between" align="center">
+                <Button
+                  mt={4}
+                  type="submit"
+                  color="aqua"
+                  bgColor="teal"
+                  isLoading={isSubmitting}
+                >
+                  Reset password
+                </Button>
+              </Flex>
+            </Form>
+          )
+        }
       </Formik>
     </Wrapper>
   );
