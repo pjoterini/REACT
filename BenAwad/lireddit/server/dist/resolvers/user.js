@@ -33,7 +33,7 @@ const UsernamePasswordInput_1 = require("./UsernamePasswordInput");
 const validateRegister_1 = require("../utils/validateRegister");
 const sendEmail_1 = require("../utils/sendEmail");
 const uuid_1 = require("uuid");
-const index_1 = require("../index");
+const ormconfig_1 = require("../ormconfig");
 let FieldError = class FieldError {
 };
 __decorate([
@@ -131,7 +131,7 @@ let UserResolver = class UserResolver {
             const hashedPassword = yield argon2_1.default.hash(options.password);
             let user;
             try {
-                const result = yield index_1.AppDataSource.createQueryBuilder()
+                const result = yield ormconfig_1.AppDataSource.createQueryBuilder()
                     .insert()
                     .into(User_1.User)
                     .values({

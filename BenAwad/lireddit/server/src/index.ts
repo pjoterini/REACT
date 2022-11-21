@@ -5,35 +5,21 @@ import { COOKIE_NAME, __prod__ } from "./constants";
 import express from "express";
 import { buildSchema } from "type-graphql";
 import { ApolloServer } from "apollo-server-express";
-import { HelloResolver } from "./resolvers/hello";
 import { PostResolver } from "./resolvers/post";
 import { UserResolver } from "./resolvers/user";
 import Redis from "ioredis";
 import session from "express-session";
 import connectRedis from "connect-redis";
 import cors from "cors";
-import { DataSource } from "typeorm";
-import { User } from "./entities/User";
-import { Post } from "./entities/Post";
-
-export const AppDataSource = new DataSource({
-  type: "postgres",
-  host: "localhost",
-  port: 5432,
-  database: "lireddit2",
-  username: "postgres",
-  password: `${process.env.SQL_PASSWORD}`,
-  logging: true,
-  synchronize: true,
-  entities: [Post, User],
-});
+import { AppDataSource } from "./ormconfig";
 
 const main = async () => {
-  AppDataSource.initialize()
+  await AppDataSource.initialize()
     .then(() => {
-      console.log("typeorm works");
+      console.log("typeorm initialize works");
     })
-    .catch((error) => console.log(error, "typeorm does not work"));
+    .catch((error) => console.error(error, "typeorm initialize does not work"));
+  await AppDataSource.runMigrations();
 
   const app = express();
 
@@ -74,7 +60,7 @@ const main = async () => {
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [HelloResolver, PostResolver, UserResolver],
+      resolvers: [PostResolver, UserResolver],
       validate: false,
     }),
     context: ({ req, res }) => ({ req, res, redis }),
