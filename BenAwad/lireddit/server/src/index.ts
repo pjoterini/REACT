@@ -12,6 +12,7 @@ import session from "express-session";
 import connectRedis from "connect-redis";
 import cors from "cors";
 import { AppDataSource } from "./ormconfig";
+// import { Post } from "./entities/Post";
 
 const main = async () => {
   await AppDataSource.initialize()
@@ -20,6 +21,9 @@ const main = async () => {
     })
     .catch((error) => console.error(error, "typeorm initialize does not work"));
   await AppDataSource.runMigrations();
+
+  // await Post.delete({});
+  // res
 
   const app = express();
 
