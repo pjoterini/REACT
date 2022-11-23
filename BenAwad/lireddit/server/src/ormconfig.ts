@@ -2,6 +2,7 @@ import { DataSource } from "typeorm";
 import { User } from "./entities/User";
 import { Post } from "./entities/Post";
 import path from "path";
+import { Updoot } from "./entities/Updoot";
 
 export const AppDataSource = new DataSource({
   type: "postgres",
@@ -12,6 +13,6 @@ export const AppDataSource = new DataSource({
   password: `${process.env.SQL_PASSWORD}`,
   logging: true,
   synchronize: true,
-  entities: [Post, User],
+  entities: [Post, User, Updoot],
   migrations: [path.join(__dirname, "./migrations/*")],
 });
