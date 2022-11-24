@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Heading } from "@chakra-ui/react";
+import { Box, Link, Button, Flex, Heading } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import NextLink from "next/link";
 import { useLogoutMutation, useMeQuery } from "../generated/graphql";
@@ -12,9 +12,7 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
 
   useEffect(() => setIsServer(false), []);
 
-  const [{ data, fetching }] = useMeQuery({
-    pause: isServer,
-  });
+  const [{ data, fetching }] = useMeQuery({ pause: isServer });
 
   let body = null;
 
@@ -31,8 +29,13 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
     );
   } else {
     body = (
-      <>
-        <Box mr={2}>{data.me.username}</Box>
+      <Flex align="center">
+        <NextLink href="/create-post">
+          <Button as={Link} mr={4}>
+            create post
+          </Button>
+        </NextLink>
+        <Box mr={4}>{data.me.username}</Box>
         <Button
           onClick={() => {
             logout({});
@@ -42,16 +45,18 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
         >
           Logout
         </Button>
-      </>
+      </Flex>
     );
   }
 
   return (
-    <Flex align="center" justifyContent="space-evenly" bg="tan" p={4}>
-      <NextLink href="/">
-        <Heading>LiReddit</Heading>
-      </NextLink>
-      <Flex justifyContent="end">{body}</Flex>
-    </Flex>
+    <Box bg="tan" p={4}>
+      <Flex justifyContent="space-between" margin="auto" maxWidth="800px">
+        <NextLink href="/">
+          <Heading>LiReddit</Heading>
+        </NextLink>
+        <Box>{body}</Box>
+      </Flex>
+    </Box>
   );
 };
