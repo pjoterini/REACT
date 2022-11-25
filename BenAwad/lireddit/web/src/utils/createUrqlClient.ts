@@ -1,6 +1,7 @@
 import { cacheExchange, Entity, Resolver } from "@urql/exchange-graphcache";
 import { dedupExchange, fetchExchange } from "urql";
 import {
+  DeletePostMutationVariables,
   LoginMutation,
   LogoutMutation,
   MeDocument,
@@ -112,7 +113,7 @@ export const cursorPagination = (): Resolver => {
 export const createUrqlClient = (ssrExchange: any, ctx: any) => {
   let cookie = "";
   if (isServer()) {
-    cookie = ctx.req.headers.cookie;
+    cookie = ctx?.req?.headers?.cookie;
   }
 
   return {
@@ -170,6 +171,12 @@ export const createUrqlClient = (ssrExchange: any, ctx: any) => {
               );
               fieldInfos.forEach((fi) => {
                 cache.invalidate("Query", "posts", fi.arguments || {});
+              });
+            },
+            deletePost: (_result, args, cache, info) => {
+              cache.invalidate({
+                __typename: "Post",
+                id: (args as DeletePostMutationVariables).id,
               });
             },
             logout: (_result, args, cache, info) => {
