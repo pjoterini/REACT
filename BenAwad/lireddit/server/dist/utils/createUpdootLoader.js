@@ -12,17 +12,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createUserLoader = void 0;
+exports.createUpdootLoader = void 0;
 const dataloader_1 = __importDefault(require("dataloader"));
-const User_1 = require("../entities/User");
 const typeorm_1 = require("typeorm");
-const createUserLoader = () => new dataloader_1.default((userIds) => __awaiter(void 0, void 0, void 0, function* () {
-    const users = yield User_1.User.findBy({ id: (0, typeorm_1.In)(userIds) });
-    const userIdToUser = {};
-    users.forEach((u) => {
-        userIdToUser[u.id] = u;
+const Updoot_1 = require("../entities/Updoot");
+const createUpdootLoader = () => new dataloader_1.default((keys) => __awaiter(void 0, void 0, void 0, function* () {
+    const updoots = yield Updoot_1.Updoot.findBy({
+        postId: (0, typeorm_1.In)(keys),
+        userId: (0, typeorm_1.In)(keys),
+        value: (0, typeorm_1.In)(keys),
     });
-    return userIds.map((userId) => userIdToUser[userId]);
+    console.log("UPDOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOTS", updoots);
+    const updootIdsToUpdoot = {};
+    updoots.forEach((updoot) => {
+        updootIdsToUpdoot[`${updoot.userId}|${updoot.postId}`] = updoot;
+    });
+    console.log("updootIdstoUpdoot:", updootIdsToUpdoot);
+    return keys.map((key) => updootIdsToUpdoot[`${key.userId}|${key.postId}`]);
 }));
-exports.createUserLoader = createUserLoader;
-//# sourceMappingURL=createUserLoader.js.map
+exports.createUpdootLoader = createUpdootLoader;
+//# sourceMappingURL=createUpdootLoader.js.map

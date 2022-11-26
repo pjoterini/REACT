@@ -1,5 +1,5 @@
 import DataLoader from "dataloader";
-import { User } from "src/entities/User";
+import { User } from "../entities/User";
 import { In } from "typeorm";
 
 export const createUserLoader = () =>

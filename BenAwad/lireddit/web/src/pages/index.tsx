@@ -21,8 +21,8 @@ export const Index = () => {
   if (!fetching && !data) {
     return (
       <div>
-        <div>{error?.message}</div>
         <div>you got query failed for some reason</div>;
+        <div>{error?.message}</div>
       </div>
     );
   }
