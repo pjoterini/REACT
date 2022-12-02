@@ -13,7 +13,6 @@ import connectRedis from "connect-redis";
 import cors from "cors";
 import { AppDataSource } from "./ormconfig";
 import { createUserLoader } from "./utils/createUserLoader";
-import { createUpdootLoader } from "./utils/createUpdootLoader";
 // import { Post } from "./entities/Post";
 
 const main = async () => {
@@ -74,7 +73,6 @@ const main = async () => {
       res,
       redis,
       userLoader: createUserLoader(),
-      updootLoader: createUpdootLoader(),
     }),
   });
 

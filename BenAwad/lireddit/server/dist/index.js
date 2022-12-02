@@ -27,7 +27,6 @@ const connect_redis_1 = __importDefault(require("connect-redis"));
 const cors_1 = __importDefault(require("cors"));
 const ormconfig_1 = require("./ormconfig");
 const createUserLoader_1 = require("./utils/createUserLoader");
-const createUpdootLoader_1 = require("./utils/createUpdootLoader");
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
     yield ormconfig_1.AppDataSource.initialize()
         .then(() => {
@@ -73,7 +72,6 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
             res,
             redis,
             userLoader: (0, createUserLoader_1.createUserLoader)(),
-            updootLoader: (0, createUpdootLoader_1.createUpdootLoader)(),
         }),
     });
     yield apolloServer.start();
