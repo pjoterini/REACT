@@ -1,5 +1,6 @@
 import "./App.css";
-import { Article } from "./components/article/Article";
+import "./index.css";
+
 import { Brand } from "./components/brand/Brand";
 import Cta from "./components/cta/Cta";
 import Navbar from "./components/navbar/Navbar";
@@ -17,11 +18,12 @@ function App() {
         <Navbar />
         <Header />
       </div>
-      <Brand />
+      {/* <Brand />
       <Gpt />
       <Features />
       <Possibility />
-      <Cta />
+      <Cta /> */}
+
       <Blog />
       <Footer />
     </div>
