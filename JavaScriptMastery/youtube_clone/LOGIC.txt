@@ -1,0 +1,15 @@
+REACT_ROUTER_DOM
+
+1. wrap your whole App with <BrowserRouter><BrowserRouter/>
+2. wrap your <Route/> elements with <Routes><Routes>
+3. <Route/> properties are: path='/', element={<Foo/>}
+
+CONSTANTS_FILE
+
+1. you can pass components as props eg.
+
+export const categories: CategoriesProps[] = [
+  { name: "New", icon: <HomeIcon /> },
+  { name: "JS Mastery", icon: <CodeIcon /> }
+]
+

@@ -1,0 +1,9 @@
+{
+  "files.exclude": {
+    "backend/.yarn": true,
+    "backend/node_modules": true,
+    "frontend/.yarn": true,
+    "frontend/node_modules": true,
+    "out": true
+  }
+}

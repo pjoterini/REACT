@@ -6,7 +6,7 @@ export const options = {
   params: {
     part: "snippet",
     videoId: "M7FIvfx5J10",
-    maxResults: "50",
+    maxResults: "10",
   },
   headers: {
     "X-RapidAPI-Key": import.meta.env.VITE_RAPID_API_KEY,
@@ -14,10 +14,19 @@ export const options = {
   },
 };
 
+// AXIOS FETCH
 export const fetchFromAPI = async (url: string) => {
   const { data } = await axios.get(`${BASE_URL}/${url}`, options);
 
   return data;
+};
+
+// FETCH API
+export const fetchFetchFromAPI = async (url: string) => {
+  let response = await fetch(`${BASE_URL}/${url}`, options);
+  let data = await response.json();
+
+  return await data;
 };
 
 // export const fetchFromAPI = () => {
